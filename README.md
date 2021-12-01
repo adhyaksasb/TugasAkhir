@@ -1,6 +1,6 @@
 # TugasAkhir
 Repository yang berisi aplikasi performansi kinerja agile yang memanfaatkan API GitHub untuk mengambil data Lead Time dari papan kanban pada fitur GitHub Projects Management.<br>
-Nb: Seluruh data merupakan mock data testing yang hanya digunakan untuk kepentingan TA
+Nb: Seluruh data pada fitur projects termasuk issue dan milestones merupakan mock data testing yang hanya digunakan untuk kepentingan TA
 
 # Javascript yang digunakan
 1. Node.js <br>
