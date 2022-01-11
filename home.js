@@ -24,7 +24,7 @@ const openSource = {
       body: JSON.stringify({
           query: `
           {
-            user(login: "adhyaksasb") {
+            user(login: "${openSource.githubUserName}") {
               avatarUrl
               login
               url

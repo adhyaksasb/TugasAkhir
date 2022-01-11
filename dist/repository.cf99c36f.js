@@ -5807,15 +5807,22 @@ var headers = {
 var repoName = localStorage.getItem("repoName");
 var no0 = 0; //Increment for Collaborators
 
+var noms = 0; //Increment for Milestones
+
 var no1 = 0; //Increment for Issues
 
-var avg = ["0"];
-var login = ["haha"];
+var arrbacklog = [];
+var convertedIntoArray1 = [];
+var convertedIntoArray2 = [];
+var convertedIntoArray3 = [];
+var convertedIntoArray4 = [];
+var convertedIntoArray5 = [];
+var convertedIntoArray6 = [];
 fetch("https://api.github.com/graphql", {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
-    query: "\n          query {\n            repository(name: \"".concat(repoName, "\", owner: \"").concat(openSource.githubUserName, "\") {\n              id\n              name\n              assignableUsers(first: 10) {\n                edges {\n                  node {\n                    id\n                    login\n                  }\n                }\n              }\n              createdAt\n              projects(first: 10) {\n                edges {\n                  node {\n                    id\n                    name\n                    createdAt\n                    closedAt\n                  }\n                }\n              }\n              issues(first: 100) {\n                edges {\n                  node {\n                    id\n                    assignees(first: 100) {\n                      edges {\n                        node {\n                          id\n                          login\n                        }\n                      }\n                    }\n                    closedAt\n                    createdAt\n                    title\n                    projectCards(first: 100) {\n                        nodes {\n                          column {\n                            name\n                          }\n                        }\n                      }\n                  }\n                }\n                totalCount\n              }\n            }\n          }\n          ")
+    query: "\n          query {\n            repository(name: \"".concat(repoName, "\", owner: \"").concat(openSource.githubUserName, "\") {\n              id\n              name\n              assignableUsers(first: 10) {\n                edges {\n                  node {\n                    id\n                    login\n                  }\n                }\n              }\n              createdAt\n              projects(first: 10) {\n                edges {\n                  node {\n                    id\n                    name\n                    createdAt\n                    closedAt\n                  }\n                }\n              }\n              issues(first: 100) {\n                edges {\n                  node {\n                    id\n                    assignees(first: 100) {\n                      edges {\n                        node {\n                          id\n                          login\n                        }\n                      }\n                    }\n                    closedAt\n                    createdAt\n                    title\n                    projectCards(first: 100) {\n                      nodes {\n                        column {\n                          name\n                        }\n                      }\n                    }\n                  }\n                }\n                totalCount\n              }\n              milestones(first: 10) {\n                nodes {\n                  title\n                  issues(first: 10) {\n                    edges {\n                      node {\n                        id\n                        assignees(first: 10) {\n                          nodes {\n                            login\n                          }\n                        }\n                        createdAt\n                        closedAt\n                        title\n                        url\n                        projectCards(first: 10) {\n                          nodes {\n                            column {\n                              name\n                            }\n                          }\n                        }\n                      }\n                    }\n                  }\n                  description\n                  dueOn\n                }\n              }\n            }\n          }\n          ")
   })
 }).then(function (res) {
   return res.json();
@@ -5826,28 +5833,70 @@ fetch("https://api.github.com/graphql", {
   output += "<h3>".concat(results.name, "</h3><br>\n        <h5>Collaborators</h5>\n        <table class = \"table table-dark\">\n            <thead>\n             <tr>\n                <th scope=\"col\" class=\"text-center\">No</th>\n                <th scope=\"col\" class=\"text-center\">Collaborators Username</th>\n             </tr>\n             <thead>\n            <tbody>"); //Loop for Collaborators
 
   results.assignableUsers.edges.forEach(function (post) {
-    login.push("".concat(post.node.login));
     no0++;
     output += "<tr>\n                <td scope=\"col\" class=\"text-center\">".concat(no0, "</td>\n                <td scope=\"col\"><a class=\"btn btn-dark btn-block\" href=\"https://www.github.com/").concat(post.node.login, "\" role=\"button\">").concat(post.node.login, "</a></td>\n             </tr>");
   });
-  output += "</tbody>\n        </table><br>\n        <h5>Performance Analysis</h5>\n        <table class = \"table table-dark\" id=\"xlsx\">\n            <thead>\n            <tr>\n                <th scope=\"col\" class=\"text-center\">No</th>\n                <th scope=\"col\" class=\"text-center\">Product Backlog</th>\n                <th scope=\"col\" class=\"text-center\">Assignee</th>\n                <th scope=\"col\" class=\"text-center\">Created At</th>\n                <th scope=\"col\" class=\"text-center\">Closed At</th>\n                <th scope=\"col\" class=\"text-center\">Status</th>\n                <th scope=\"col\" class=\"text-center\">Lead Time</th>\n             </tr>\n             </thead>\n            <tbody>"; //Loop for Product Backlog (Issues)
-
-  results.issues.edges.forEach(function (post) {
-    no1++;
-    var assignee = "".concat(post.node.assignees.edges[0].node.login);
-    var date1 = "".concat(post.node.createdAt);
-    var date2 = "".concat(post.node.closedAt);
-    var moment1 = moment(date1);
-    var moment2 = moment(date2);
-    var days = moment2.diff(moment1, 'Days');
-    var hours = moment2.diff(moment1, 'H');
-    var diff = hours % 24;
-    var LT = ["".concat(days, "d").concat(diff, "h")];
-    output += "<tr>\n                <td scope=\"col\" class=\"text-center\">".concat(no1, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(post.node.title, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(assignee, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(post.node.createdAt, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(post.node.closedAt, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(post.node.projectCards.nodes[0].column.name, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(LT, "</td>");
+  output += "</tbody>\n        </table><br>\n        <h5>Performance Analysis</h5>\n        <nav>\n        <div class=\"nav nav-tabs\" id=\"nav-tab\" role=\"tablist\">";
+  results.milestones.nodes.forEach(function (ms) {
+    noms++;
+    output += "<a class=\"nav-item nav-link\" id=\"ms".concat(noms, "-tab\" data-toggle=\"tab\" href=\"#ms").concat(noms, "\" role=\"tab\" aria-controls=\"ms").concat(noms, "\" aria-selected=\"true\">Milestones ").concat(noms, "</a>");
   });
-  output += "</tbody>\n                </table>\n                </div>\n            </div> ";
+  output += "\n        </div>\n      </nav>\n      <div class=\"tab-content\" id=\"nav-tabContent\">\n      ";
+  results.milestones.nodes.forEach(function (ms) {
+    no1++;
+    var title = "".concat(ms.title);
+    var due = "".concat(ms.dueOn); // var due = new Date(`${ms.dueOn}`);
+
+    output += "\n          <div class=\"tab-pane fade show active\" id=\"ms".concat(no1, "\" role=\"tabpanel\" aria-labelledby=\"ms").concat(no1, "-tab\">          \n          <br>\n          <h5>").concat(title, "</h5>\n          <h6>Due On: ").concat(due, "</h6>\n        </br>\n        <form action=\"./summary.html\">\n        <table class = \"table table-dark\" name=\"").concat(title, "\" id=\"tblms").concat(no1, "\">\n          <thead>\n            <tr>\n              <th scope=\"col\" class=\"text-center\">Backlog</th>\n              <th scope=\"col\" class=\"text-center\">Assignee</th>\n              <th scope=\"col\" class=\"text-center\">CreatedAt</th>\n              <th scope=\"col\" class=\"text-center\">ClosedAt</th>\n              <th scope=\"col\" class=\"text-center\">Status</th>\n              <th scope=\"col\" class=\"text-center\">LeadTime</th>\n              <th scope=\"col\" class=\"text-center\">InHours</th>\n            </tr>\n          </thead>\n          <tbody>");
+    ms.issues.edges.forEach(function (issue) {
+      var backlog = "".concat(issue.node.title);
+      var createdAt = "".concat(issue.node.createdAt);
+      var closedAt = "".concat(issue.node.closedAt);
+      var assignee = "".concat(issue.node.assignees.nodes[0].login);
+      var status = "".concat(issue.node.projectCards.nodes[0].column.name);
+      var moment1 = moment(createdAt);
+      var moment2 = moment(closedAt);
+      var days = moment2.diff(moment1, 'Days');
+      var hours = moment2.diff(moment1, 'H');
+      var diff = hours % 24;
+      var LT = ["".concat(days, "d").concat(diff, "h")];
+      arrbacklog.push(backlog);
+      localStorage.setItem("backlog".concat(no1), JSON.stringify(arrbacklog));
+      output += "<tr>\n            <td scope=\"col\" class=\"text-center\">".concat(backlog, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(assignee, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(createdAt, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(closedAt, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(status, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(LT, "</td>\n            <td scope=\"col\" class=\"text-center\">").concat(hours, "</td>");
+    });
+    output += "</tbody>\n            </table>\n            <button id=\"btntojson".concat(no1, "\" class=\"btn1\" name=\"").concat(due, "\" name2=\"").concat(title, "\" onClick=\"setLS(this.name)\">Summary</button>\n            </form>\n            </div>");
+  });
+  output += "</div>\n          </div>\n        </div> ";
   console.log(results);
   document.getElementById('results').innerHTML = output;
+  $('#btntojson1').click(function () {
+    var table = $('#tblms1').tableToJSON(); // Convert the table into a javascript object
+
+    console.log(table);
+    localStorage.setItem('msSummary', 'Sprint 1');
+    localStorage.setItem('Sprint 1', JSON.stringify(table));
+  });
+  $('#btntojson2').click(function () {
+    var table = $('#tblms2').tableToJSON(); // Convert the table into a javascript object
+
+    console.log(table);
+    localStorage.setItem('msSummary', 'Sprint 2');
+    localStorage.setItem('Sprint 2', JSON.stringify(table));
+  });
+  $('#btntojson3').click(function () {
+    var table = $('#tblms3').tableToJSON(); // Convert the table into a javascript object
+
+    console.log(table);
+    localStorage.setItem('msSummary', 'Sprint 3');
+    localStorage.setItem('Sprint 3', JSON.stringify(table));
+  });
+  $('#btntojson4').click(function () {
+    var table = $('#tblms4').tableToJSON(); // Convert the table into a javascript object
+
+    console.log(table);
+    localStorage.setItem('msSummary', 'Sprint 4');
+    localStorage.setItem('Sprint 4', JSON.stringify(table));
+  });
 }).catch(function (err) {
   alert("Token is missing, invalid, or timed out");
   window.location.href = "./login.html";
@@ -5880,7 +5929,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64189" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59765" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

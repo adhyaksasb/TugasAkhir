@@ -140,7 +140,7 @@ fetch("https://api.github.com/graphql", {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
-    query: "\n          {\n            user(login: \"adhyaksasb\") {\n              avatarUrl\n              login\n              url\n              repositories(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {\n                nodes {\n                  createdAt\n                  updatedAt\n                  name\n                  nameWithOwner\n                  url\n                  description\n                  owner {\n                    login\n                  }\n                }\n              }\n            }\n          }\n          "
+    query: "\n          {\n            user(login: \"".concat(openSource.githubUserName, "\") {\n              avatarUrl\n              login\n              url\n              repositories(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {\n                nodes {\n                  createdAt\n                  updatedAt\n                  name\n                  nameWithOwner\n                  url\n                  description\n                  owner {\n                    login\n                  }\n                }\n              }\n            }\n          }\n          ")
   })
 }).then(function (res) {
   return res.json();
@@ -189,7 +189,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64189" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59765" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
