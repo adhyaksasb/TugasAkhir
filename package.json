@@ -1,15 +1,14 @@
 {
-  "name": "final",
+  "name": "rpl",
   "version": "1.0.0",
-  "description": "",
+  "description": "Tugas Akhir RPL",
   "main": "home.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Adhyaksa",
   "license": "ISC",
   "dependencies": {
-    "chart.js": "^3.7.0",
     "moment": "^2.29.1"
   }
 }

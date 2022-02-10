@@ -121,6 +121,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 var condition = "test";
 var msName = localStorage.getItem('msSummary');
 var msDue = localStorage.getItem('sumDue');
+var repo = localStorage.getItem('repoName');
 var dateDue = new Date(msDue);
 var myArrayFromLocalStorage = localStorage.getItem(msName);
 
@@ -130,16 +131,16 @@ if (myArrayFromLocalStorage && myArrayFromLocalStorage.length) {
 }
 
 var output = '<div>';
-output += "\n    <table class = \"table table-dark\" name=\"".concat(msName, "\" id=\"tblms\">\n        <thead>\n        <tr>\n            <th colspan=\"8\" scope=\"col\" class=\"text-center\">").concat(msName, "</th>\n            </tr>\n            <tr>\n                <th colspan=\"8\" scope=\"col\" class=\"text-center\">Due On: ").concat(msDue, "</th>                            \n            </tr>\n            <tr>\n                <th scope=\"col\" class=\"text-center\">Backlog</th>\n                <th scope=\"col\" class=\"text-center\">Assignee</th>\n                <th scope=\"col\" class=\"text-center\">Created At</th>\n                <th scope=\"col\" class=\"text-center\">Closed At</th>\n                <th scope=\"col\" class=\"text-center\">Status</th>\n                <th scope=\"col\" class=\"text-center\">Lead Time</th>\n                <th scope=\"col\" class=\"text-center\">LT (in Hours)</th>\n                <th scope=\"col\" class=\"text-center\">Condition</th>\n            </tr>\n        </thead>\n        <tbody>");
+output += "\n    <table class = \"table table-dark\" name=\"".concat(msName, "\" id=\"tblms\">\n        <thead>\n        <tr>\n            <th colspan=\"8\" scope=\"col\" class=\"text-center\">").concat(repo, " (").concat(msName, ")</th>\n            </tr>\n            <tr>\n                <th colspan=\"8\" scope=\"col\" class=\"text-center\">Due On: ").concat(msDue, "</th>                            \n            </tr>\n            <tr>\n                <th scope=\"col\" class=\"text-center\">Backlog</th>\n                <th scope=\"col\" class=\"text-center\">Assignee</th>\n                <th scope=\"col\" class=\"text-center\">Created At</th>\n                <th scope=\"col\" class=\"text-center\">Closed At</th>\n                <th scope=\"col\" class=\"text-center\">Status</th>\n                <th scope=\"col\" class=\"text-center\">Lead Time</th>\n                <th scope=\"col\" class=\"text-center\">LT (in Hours)</th>\n                <th scope=\"col\" class=\"text-center\">Condition</th>\n            </tr>\n        </thead>\n        <tbody>");
 
 for (var i = 0; i < myArray.length; i++) {
   var obj = myArray[i];
   var condDue = new Date(obj.ClosedAt);
 
-  if (dateDue < condDue) {
-    condition = "Late";
-  } else {
+  if (dateDue > condDue) {
     condition = "On Time";
+  } else {
+    condition = "Late";
   }
 
   output += "\n            <tr>\n                <td scope=\"col\" class=\"text-center\">".concat(obj.Backlog, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.Assignee, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.CreatedAt, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.ClosedAt, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.Status, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.LeadTime, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(obj.InHours, "</td>\n                <td scope=\"col\" class=\"text-center\">").concat(condition, "</td>\n            </tr>");
@@ -175,7 +176,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55535" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52406" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

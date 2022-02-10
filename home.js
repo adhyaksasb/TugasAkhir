@@ -1,7 +1,8 @@
 const openSource = {
     githubConvertedToken: localStorage.getItem("token"),
     githubUserName: localStorage.getItem("username"),
-    // githubConvertedToken: "ac4f3b8bbea34f039fb7ab06a77f4246600a1a83",
+    githubOrganization: localStorage.getItem("organization")
+    // githubConvertedToken: "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",
     // githubUserName: "adhyaksasb",
   };
   const headers = {
@@ -28,18 +29,19 @@ const openSource = {
               avatarUrl
               login
               url
-              repositories(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {
-                nodes {
-                  createdAt
-                  updatedAt
-                  name
-                  nameWithOwner
-                  url
-                  description
-                  owner {
-                    login
+              organization(login: "${openSource.githubOrganization}") {
+                login
+                avatarUrl
+                repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {
+                  totalCount
+                  nodes {
+                    name
+                    nameWithOwner
+                    updatedAt
+                    description
                   }
-                }
+                  
+                } 
               }
             }
           }
@@ -47,7 +49,7 @@ const openSource = {
       })    
   })
   .then(res => res.json())
-  .then(data => data.data.user).then(results => {
+  .then(data => data.data.user.organization).then(results => {
     console.log(results);
     let output = '<div class="row">';
       output += `
@@ -57,21 +59,24 @@ const openSource = {
           <h3>${results.login}</h3>
       </div>
       <div class="col-lg-8 px-4 pt-1">
-        <h1>Repositories List</h1>
-        <form action="./repository.html">`;
+        <h1>Repositories List (${results.repositories.totalCount})</h1>
+        <form action="./repository.html">
+        <div class="card-content" id="decard" style="display: none">`;
 
       //Loop for Repositories List
       results.repositories.nodes.forEach(post => {
         no++;
-        output+= `<div class="card my-3">
-        <input type="submit" class="card-header bg-dark text-light" id="repo${no}" name="${post.name}" value="${post.nameWithOwner}" onclick="reply_click(this.name);"/>
+        output+= `<div class="card my-3" style="width: 36rem;">
+        <input type="submit" class="card-header bg-dark text-light" id="repo${no}" name="${post.name}" value="${post.nameWithOwner}" target="_blank" onclick="reply_click(this.name);"/>
         <div class="card-body bg-secondary text-light">
           <h5 class="card-text">${post.description}</h5>
           <br>
           <p class="card-text">Update on ${post.updatedAt}</p>
+        </div>
         </div>`
       })
       output+= `</div>
+      </div>
     </div>
   </div>`
       document.getElementById('results').innerHTML = output;

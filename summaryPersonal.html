@@ -1,0 +1,186 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="jquery.tabletojson.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <style>
+            .btn1 {
+                border: none;
+                outline: none;
+                height: 50px;
+                width: 100%;
+                background-color: black;
+                color: white;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            .btn1:hover {
+                background: white;
+                border: 1px solid;
+                color: black;
+            }
+            </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mx-auto order-0">
+                <a class="navbar-brand mx-auto" href="./homePersonal.html">GitHub Projects Performance Measurement</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" name="ininama" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Account
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="./loginType.html">Switch Account</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="./login.html" onclick="logout();">Log Out</a>
+                        </div>
+                      </li>
+                </ul>
+            </div>
+        </nav><br>
+        <div id="results">
+        </div>
+        <button id="btnExport" class="btn1" onclick="ExportToExcel('xlsx')">Export Summary to Excel</button>
+        <div class="row">
+            <div class="col-sm-4"><br>
+                <h1 class="text-center">Total Lead Time</h1>
+                <table class = "table table-dark" name="total" id="totalLT">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="text-center">Assignee</td>
+                            <th scope="col" class="text-center">Total</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-8"><br>
+                <h1 class="text-center">Chart</h1>
+                <div class="chart">
+                    <canvas id="myChart" style="height: 400px;"></canvas>
+                  </div>
+            </div>
+        </div>
+        <script src="./summaryPersonal.js"></script>
+        <script>
+            function ExportToExcel(type, fn, dl) {
+                var elt = document.getElementById('tblms');
+                var name = $('#tblms').attr('name');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+                var today = new Date();
+                var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+                var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+                var dateTime = date+' '+time;
+                return dl ?
+                XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+            }
+            var totals = [];
+            $('#tblms tbody tr').each(function(e) {      
+                var tds= $(this).find('td');
+                var index = $(tds[1]).text();
+                var lt = parseInt($(tds[6]).text(), 10);
+                if (totals[index] == undefined)
+                    totals[index] = { lt: 0};
+                totals[index].lt += lt;
+            });
+            for (var key in totals)
+            $('#totalLT tbody').append('<tr><td scope="col" class="text-center">'+key+'</td><td scope="col" class="text-center">'+
+            totals[key].lt+'</td>');
+
+            var table = $('#totalLT').tableToJSON();
+            console.log(table);
+              // Map JSON values back to label array
+            var labels = table.map(function (e) {
+                return e.Assignee;
+            });
+            console.log(labels);
+            
+            // Map JSON values back to values array
+            var values = table.map(function (e) {
+                return e.Total;
+            });
+            console.log(values);
+
+            function BuildChart(labels, values, chartTitle) {
+                var ctx = document.getElementById("myChart").getContext('2d');
+                var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels, // Our labels
+                    datasets: [{
+                    label: chartTitle, // Name the series
+                    data: values, // Our values
+                    backgroundColor: [ // Specify custom colors
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [ // Add custom color borders
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1 // Specify bar border width
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: 'Total Lead Time',
+                        fontSize: 25
+                    },
+                    legend: {
+                        display: false
+                    },
+                    responsive: true, // Instruct chart js to respond nicely.
+                    maintainAspectRatio: false, // Add to prevent default behavior of full-width/height
+
+                },
+                });
+                return myChart;
+            }
+            var chart = BuildChart(labels, values, "Total Lead Time");
+        </script>
+    </body>
+    </html>

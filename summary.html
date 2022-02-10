@@ -28,6 +28,7 @@
                 color: black;
             }
             </style>
+        <title>GitHub Projects Measurement</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
@@ -51,16 +52,23 @@
                 </ul>
             </div>
             <div class="mx-auto order-0">
-                <a class="navbar-brand mx-auto" href="./home.html">GitHub Projects Performance Management</a>
+                <a class="navbar-brand mx-auto" href="./home.html">GitHub Projects Performance Measurement</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
                     <span class="navbar-toggler-icon"></span>
                 </button>
             </div>
             <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html" onclick="logout();">Log Out</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" name="ininama" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Account
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="./loginType.html">Switch Account</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="./login.html" onclick="logout();">Log Out</a>
+                        </div>
+                      </li>
                 </ul>
             </div>
         </nav><br>
@@ -80,6 +88,18 @@
                     <tbody>
                     </tbody>
                 </table>
+                <h1 class="text-center">Mean Lead Time</h1>
+                <table class = "table table-dark" name="total" id="meanLT">
+                    <thead>
+                        <tr>
+                        <th scope="col" class="text-center">Assignee</td>
+                        <th scope="col" class="text-center">Total Backlog</td>
+                        <th scope="col" class="text-center">Mean Lead Time</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
             <div class="col-sm-8"><br>
                 <h1 class="text-center">Chart</h1>
@@ -90,17 +110,23 @@
         </div>
         <script src="./summary.js"></script>
         <script>
+            function logout() {
+                localStorage.removeItem("token");
+                localStorage.removeItem("username");
+                localStorage.removeItem("repoName");
+            }
             function ExportToExcel(type, fn, dl) {
                 var elt = document.getElementById('tblms');
+                var repo = localStorage.getItem('repoName');
                 var name = $('#tblms').attr('name');
                 var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
                 var today = new Date();
                 var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-                var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+                var time = today.getHours() + "." + today.getMinutes() + "." + today.getSeconds() + ".";
                 var dateTime = date+' '+time;
                 return dl ?
                 XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
-                XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+                XLSX.writeFile(wb, fn || (`${repo} ${name} (${dateTime}).` + (type || 'xlsx')));
             }
             var totals = [];
             $('#tblms tbody tr').each(function(e) {      
@@ -111,69 +137,115 @@
                     totals[index] = { lt: 0};
                 totals[index].lt += lt;
             });
-            for (var key in totals)
-            $('#totalLT tbody').append('<tr><td scope="col" class="text-center">'+key+'</td><td scope="col" class="text-center">'+
-            totals[key].lt+'</td>');
+
+            for (var key in totals) {
+                $('#totalLT tbody').append('<tr><td scope="col" class="text-center">'+key+'</td><td scope="col" class="text-center">'+
+                totals[key].lt+'</td>');
+            }
+
+
 
             var table = $('#totalLT').tableToJSON();
             console.log(table);
               // Map JSON values back to label array
-            var labels = table.map(function (e) {
+            var tlt = table.map(function (e) {
                 return e.Assignee;
             });
-            console.log(labels);
+
+            console.log(tlt);
             
             // Map JSON values back to values array
-            var values = table.map(function (e) {
+            var value = table.map(function (e) {
                 return e.Total;
             });
-            console.log(values);
+            console.log(value);  
 
-            function BuildChart(labels, values, chartTitle) {
-                var ctx = document.getElementById("myChart").getContext('2d');
-                var myChart = new Chart(ctx, {
+            var totalBacklog = [];
+            var myRows = $(`#tblms tr:contains("${tlt[0]}")`);
+            var myRows1 = $(`#tblms tr:contains("${tlt[1]}")`);
+            var myRows2 = $(`#tblms tr:contains("${tlt[2]}")`);
+            var myRows3 = $(`#tblms tr:contains("${tlt[3]}")`);
+            var myRows4 = $(`#tblms tr:contains("${tlt[4]}")`);
+            var myRows5 = $(`#tblms tr:contains("${tlt[5]}")`);
+            var myRows6 = $(`#tblms tr:contains("${tlt[6]}")`);
+            var myRows7 = $(`#tblms tr:contains("${tlt[7]}")`);
+            var myRows8 = $(`#tblms tr:contains("${tlt[8]}")`);
+            var myRows9 = $(`#tblms tr:contains("${tlt[9]}")`);
+            totalBacklog.push(myRows.length, myRows1.length, myRows2.length, myRows3.length, myRows4.length, myRows5.length, myRows6.length, myRows7.length, myRows8.length, myRows9.length);
+            console.log(totalBacklog);
+            var totalMean = [];
+
+            for (var i = 0; i < table.length; i++) {
+                var object = table[i];
+                var mean = object.Total/totalBacklog[i];
+                var meanLT = Math.round(mean);
+                totalMean.push(meanLT);
+                $('#meanLT tbody').append('<tr><td scope="col" class="text-center">'+object.Assignee+'</td><td scope="col" class="text-center">'+
+                totalBacklog[i] + '</td><td scope="col" class="text-center">' +
+                meanLT + '</td>');
+            }
+
+            console.log(totalMean);
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: labels, // Our labels
+                    labels: tlt,
                     datasets: [{
-                    label: chartTitle, // Name the series
-                    data: values, // Our values
-                    backgroundColor: [ // Specify custom colors
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [ // Add custom color borders
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1 // Specify bar border width
+                        label: "Mean Lead Time",
+                        data: totalMean,
+                        backgroundColor: [
+                            'rgba(51, 204, 51, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(0, 102, 0, 1)',
+                        ],
+                        borderWidth: 1
+                    },{
+                        label: "Total Lead Time",
+                        data: value,
+                        backgroundColor: [
+                            'rgba(0, 0, 255, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 0, 102, 1)'
+                        ],
+                        borderWidth: 1
                     }]
                 },
                 options: {
-                    title: {
-                        display: true,
-                        text: 'Total Lead Time',
-                        fontSize: 25
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: false,
+                            beginAtZero: true
+                        }
                     },
-                    legend: {
-                        display: false
-                    },
-                    responsive: true, // Instruct chart js to respond nicely.
-                    maintainAspectRatio: false, // Add to prevent default behavior of full-width/height
+                    // tooltips: {
+                    //     callbacks: {
+                    //         label: function(t, d) {
+                    //         var dst1_label = d.datasets[t.datasetIndex].label + ': ' + (+t.yLabel + d.datasets[1].data[t.index]);
+                    //         var dst2_label = d.datasets[t.datasetIndex].label + ': ' + t.yLabel;
+                    //         if (t.datasetIndex === 0) return dst1_label;
+                    //         else return dst2_label;
+                    //     }
+                    // }
+                }
+            //     },
+            //     plugins: [{
+            //     beforeInit: function(c) {
+            //         var data1 = c.data.datasets[0].data;
+            //         var data2 = c.data.datasets[1].data;
+            //         c.data.datasets[0].data = data1.map(function(e, i) {
+            //             return e - data2[i];
+            //         });
+            //     }
+            // }]
+            });
 
-                },
-                });
-                return myChart;
-            }
-            var chart = BuildChart(labels, values, "Total Lead Time");
         </script>
     </body>
     </html>

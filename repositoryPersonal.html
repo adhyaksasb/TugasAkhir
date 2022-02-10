@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script src="jquery.tabletojson.min.js"></script>
+        <title>GitHub Projects Performance Analysis</title>
+        <style>
+        .btn1 {
+            border: none;
+            outline: none;
+            height: 50px;
+            width: 100%;
+            background-color: black;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn1:hover {
+            background: white;
+            border: 1px solid;
+            color: black;
+        }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mx-auto order-0">
+                <a class="navbar-brand mx-auto" href="./homePersonal.html">GitHub Projects Performance Measurement</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" name="ininama" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Account
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="./loginType.html">Switch Account</a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item" href="./login.html" onclick="logout();">Log Out</a>
+                        </div>
+                      </li>
+                </ul>
+            </div>
+        </nav>
+        <div id="search-container" class="container">
+            <div id="search" class="card card-body bg-light mb-2">
+                <div id="results"></div>
+            </div>
+        </div>
+        <script src="./repositoryPersonal.js"></script>
+        <script>
+            function logout() {
+                localStorage.removeItem("token");
+                localStorage.removeItem("username");
+                localStorage.removeItem("repoName");
+            }
+            function setLS(clicked_Name)
+            {
+                localStorage.setItem("sumDue", clicked_Name);
+            }
+
+            // Export to Excel (Milestones 1-4)
+            // function ExportToExcel1(type, fn, dl) {
+            //     var elt = document.getElementById('tblms1');
+            //     var name = $('#tblms1').attr('name');
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+            //     var today = new Date();
+            //     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            //     var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+            //     var dateTime = date+' '+time;
+            //     return dl ?
+            //     XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            //     XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+            // }
+            // function ExportToExcel2(type, fn, dl) {
+            //     var elt = document.getElementById('tblms2');
+            //     var name = $('#tblms2').attr('name');
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+            //     var today = new Date();
+            //     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            //     var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+            //     var dateTime = date+' '+time;
+            //     return dl ?
+            //     XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            //     XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+            // }
+            // function ExportToExcel3(type, fn, dl) {
+            //     var elt = document.getElementById('tblms3');
+            //     var name = $('#tblms3').attr('name');
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+            //     var today = new Date();
+            //     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            //     var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+            //     var dateTime = date+' '+time;
+            //     return dl ?
+            //     XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            //     XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+            // }
+            // function ExportToExcel4(type, fn, dl) {
+            //     var elt = document.getElementById('tblms4');
+            //     var name = $('#tblms4').attr('name');
+            //     var wb = XLSX.utils.table_to_book(elt, { sheet: "sheet1" });
+            //     var today = new Date();
+            //     var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            //     var time = today.getHours() + "h" + today.getMinutes() + "m" + today.getSeconds() + "s";
+            //     var dateTime = date+' '+time;
+            //     return dl ?
+            //     XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+            //     XLSX.writeFile(wb, fn || (`${name} (${dateTime}).` + (type || 'xlsx')));
+            // }
+
+            // $('#btntojson1').click( function() {
+            //   var table = $('#tblms1').tableToJSON(); // Convert the table into a javascript object
+            //   console.log(table);
+            //   localStorage.setItem('sprintbacklog1', JSON.stringify(table));
+            //   alert(JSON.stringify(table));
+            // });
+            // $('#btntojson2').click( function() {
+            //   var table = $('#tblms2').tableToJSON(); // Convert the table into a javascript object
+            //   console.log(table);
+            //   localStorage.setItem('sprintbacklog2', JSON.stringify(table));
+            //   alert(JSON.stringify(table));
+            // });
+            // $('#btntojson3').click( function() {
+            //   var table = $('#tblms3').tableToJSON(); // Convert the table into a javascript object
+            //   console.log(table);
+            //   localStorage.setItem('sprintbacklog3', JSON.stringify(table));
+            //   alert(JSON.stringify(table));
+            // });
+            // $('#btntojson4').click( function() {
+            //   var table = $('#tblms4').tableToJSON(); // Convert the table into a javascript object
+            //   console.log(table);
+            //   localStorage.setItem('sprintbacklog4', JSON.stringify(table));
+            //   alert(JSON.stringify(table));
+            // });
+
+        //     function ExportToExcel() {
+        //         var workbook = XLSX.utils.book_new();
+        //         var tbl1= document.getElementById('tblms1');
+        //         var tbl2= document.getElementById('tblms2');
+        //         var tbl3= document.getElementById('tblms3');
+        //         var tbl4= document.getElementById('tblms4');
+                
+        //         var wb1 = XLSX.utils.table_to_sheet(tbl1);
+        //         XLSX.utils.book_append_sheet(workbook, wb1,'sheet11');
+
+        //         var wb2 = XLSX.utils.table_to_sheet(tbl2);
+        //         XLSX.utils.book_append_sheet(workbook, wb2,'sheet12');
+
+        //         var wb3 = XLSX.utils.table_to_sheet(tbl3);
+        //         XLSX.utils.book_append_sheet(workbook, wb3,'sheet12');
+
+        //         var wb4 = XLSX.utils.table_to_sheet(tbl4);
+        //         XLSX.utils.book_append_sheet(workbook, wb4,'sheet12');
+                
+        //         XLSX.writeFile(workbook,'multisheet_file.xlsx');
+        // }
+        </script>
+    </body>
+</html>

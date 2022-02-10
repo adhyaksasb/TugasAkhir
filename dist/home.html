@@ -4,12 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <title>GitHub Projects Performance Analysis</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <title>GitHub Projects Performance Measurement</title>
+    <script>var un = localStorage.getItem("username");
+console.log(un);</script>
     <style>img {
         border-radius: 180px;
         width: 80%;
     }</style>
-<script src="/login.js"></script></head>
+<script src="/loginType.js"></script></head>
 <body>
   <nav class="navbar navbar-expand-md navbar-dark bg-dark">
     <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
@@ -32,25 +36,104 @@
         </ul>
     </div>
     <div class="mx-auto order-0">
-        <a class="navbar-brand mx-auto" href="/home.html">GitHub Projects Performance Management</a>
+        <a class="navbar-brand mx-auto" href="/home.html">GitHub Projects Performance Measurement</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
     <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/login.html" onclick="logout();">Log Out</a>
-            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" name="ininama" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Account
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="/loginType.html">Switch Account</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/login.html" onclick="logout();">Log Out</a>
+                </div>
+              </li>
         </ul>
     </div>
 </nav>
     <section class="form my-5 mx-5">
         <div class="container">
             <div id="results"></div>
+            <div class="pagination d-flex justify-content-center"></div>
         </div>
     </section>
+    <script>function getPageList(totalPages, page, maxLength) {
+  function range(start, end) {
+    return Array.from(Array(end - start + 1), function (_, i) {
+      return i + start;
+    });
+  }
+
+  var sideWidth = maxLength < 9 ? 1 : 2;
+  var leftWidth = maxLength - sideWidth * 2 - 3 >> 1;
+  var rightWidth = maxLength - sideWidth * 2 - 3 >> 1;
+
+  if (totalPages <= maxLength) {
+    return range(1, totalPages);
+  }
+
+  if (page <= maxLength - sideWidth - 1 - rightWidth) {
+    return range(1, maxLength - sideWidth - 1).concat(0, range(totalPages - sideWidth + 1, totalPages));
+  }
+
+  if (page >= totalPages - sideWidth - 1 - rightWidth) {
+    return range(1, sideWidth).concat(0, range(totalPages - sideWidth - 1 - rightWidth - leftWidth, totalPages));
+  }
+
+  return range(1, sideWidth).concat(0, range(page - leftWidth, page + rightWidth), 0, range(totalPages - sideWidth + 1, totalPages));
+}
+
+$(function () {
+  setTimeout(function () {
+    var numberOfItems = $(".card-content .card").length;
+    console.log(numberOfItems);
+    var limitPerPage = 5; //Show max card
+
+    var totalPages = Math.ceil(numberOfItems / limitPerPage);
+    var paginationSize = 7; //How max limit pagination number that can show
+
+    var currentPage;
+
+    function showPage(whichPage) {
+      if (whichPage < 1 || whichPage > totalPages) return false;
+      currentPage = whichPage;
+      $(".card-content .card").hide().slice((currentPage - 1) * limitPerPage, currentPage * limitPerPage).show();
+      $(".pagination li").slice(1, -1).remove();
+      getPageList(totalPages, currentPage, paginationSize).forEach(function (item) {
+        $("<li>").addClass("page-item").addClass(item ? "current-page" : "dots").toggleClass("active", item === currentPage).append($("<a>").addClass("page-link").attr({
+          href: "javascript:void(0)"
+        }).text(item || "...")).insertBefore(".next-page");
+      });
+      $(".previous-page").toggleClass("disable", currentPage === 1);
+      $(".next-page").toggleClass("disable", currentPage === totalPages);
+      return true;
+    }
+
+    $(".pagination").append($("<li>").addClass("page-item").addClass("previous-page").append($("<a>").addClass("page-link").attr({
+      href: "javascript:void(0)"
+    }).text("Prev")), $("<li>").addClass("page-item").addClass("next-page").append($("<a>").addClass("page-link").attr({
+      href: "javascript:void(0)"
+    }).text("Next")));
+    $(".card-content").show();
+    showPage(1);
+    $(document).on("click", ".pagination li.current-page:not(.active)", function () {
+      return showPage(+$(this).text());
+    });
+    $(".next-page").on("click", function () {
+      return showPage(currentPage + 1);
+    });
+    $(".previous-page").on("click", function () {
+      return showPage(currentPage - 1);
+    });
+  }, 3000);
+});</script>
     <script src="/home.fc46b7b9.js"></script>
+    
     <script>function reply_click(clicked_Name) {
   localStorage.setItem("repoName", clicked_Name);
 }

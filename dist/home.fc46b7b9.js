@@ -120,7 +120,8 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"home.js":[function(require,module,exports) {
 var openSource = {
   githubConvertedToken: localStorage.getItem("token"),
-  githubUserName: localStorage.getItem("username") // githubConvertedToken: "ac4f3b8bbea34f039fb7ab06a77f4246600a1a83",
+  githubUserName: localStorage.getItem("username"),
+  githubOrganization: localStorage.getItem("organization") // githubConvertedToken: "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",
   // githubUserName: "adhyaksasb",
 
 };
@@ -140,27 +141,24 @@ fetch("https://api.github.com/graphql", {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
-    query: "\n          {\n            user(login: \"".concat(openSource.githubUserName, "\") {\n              avatarUrl\n              login\n              url\n              repositories(first: 10, orderBy: {field: CREATED_AT, direction: DESC}) {\n                nodes {\n                  createdAt\n                  updatedAt\n                  name\n                  nameWithOwner\n                  url\n                  description\n                  owner {\n                    login\n                  }\n                }\n              }\n            }\n          }\n          ")
+    query: "\n          {\n            user(login: \"".concat(openSource.githubUserName, "\") {\n              avatarUrl\n              login\n              url\n              organization(login: \"").concat(openSource.githubOrganization, "\") {\n                login\n                avatarUrl\n                repositories(first: 100, orderBy: {field: PUSHED_AT, direction: DESC}) {\n                  totalCount\n                  nodes {\n                    name\n                    nameWithOwner\n                    updatedAt\n                    description\n                  }\n                  \n                } \n              }\n            }\n          }\n          ")
   })
 }).then(function (res) {
   return res.json();
 }).then(function (data) {
-  return data.data.user;
+  return data.data.user.organization;
 }).then(function (results) {
   console.log(results);
   var output = '<div class="row">';
-  output += "\n      <div class=\"row no-gutters\">\n      <div class=\"col-lg-4\" align=\"center\">\n          <img src=\"".concat(results.avatarUrl, "\" class=\"img-fluid my-3\" alt=\"\">\n          <h3>").concat(results.login, "</h3>\n      </div>\n      <div class=\"col-lg-8 px-4 pt-1\">\n        <h1>Repositories List</h1>\n        <form action=\"./repository.html\">"); //Loop for Repositories List
+  output += "\n      <div class=\"row no-gutters\">\n      <div class=\"col-lg-4\" align=\"center\">\n          <img src=\"".concat(results.avatarUrl, "\" class=\"img-fluid my-3\" alt=\"\">\n          <h3>").concat(results.login, "</h3>\n      </div>\n      <div class=\"col-lg-8 px-4 pt-1\">\n        <h1>Repositories List (").concat(results.repositories.totalCount, ")</h1>\n        <form action=\"./repository.html\">\n        <div class=\"card-content\" id=\"decard\" style=\"display: none\">"); //Loop for Repositories List
 
   results.repositories.nodes.forEach(function (post) {
     no++;
-    output += "<div class=\"card my-3\">\n        <input type=\"submit\" class=\"card-header bg-dark text-light\" id=\"repo".concat(no, "\" name=\"").concat(post.name, "\" value=\"").concat(post.nameWithOwner, "\" onclick=\"reply_click(this.name);\"/>\n        <div class=\"card-body bg-secondary text-light\">\n          <h5 class=\"card-text\">").concat(post.description, "</h5>\n          <br>\n          <p class=\"card-text\">Update on ").concat(post.updatedAt, "</p>\n        </div>");
+    output += "<div class=\"card my-3\" style=\"width: 36rem;\">\n        <input type=\"submit\" class=\"card-header bg-dark text-light\" id=\"repo".concat(no, "\" name=\"").concat(post.name, "\" value=\"").concat(post.nameWithOwner, "\" target=\"_blank\" onclick=\"reply_click(this.name);\"/>\n        <div class=\"card-body bg-secondary text-light\">\n          <h5 class=\"card-text\">").concat(post.description, "</h5>\n          <br>\n          <p class=\"card-text\">Update on ").concat(post.updatedAt, "</p>\n        </div>\n        </div>");
   });
-  output += "</div>\n    </div>\n  </div>";
+  output += "</div>\n      </div>\n    </div>\n  </div>";
   document.getElementById('results').innerHTML = output;
-}).catch(function (err) {
-  alert("Token is missing, invalid, or timed out");
-  window.location.href = "./login.html";
-});
+}).catch();
 },{}],"C:/Users/adshi/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -189,7 +187,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59765" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49550" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

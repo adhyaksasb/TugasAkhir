@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" charset="utf-8"></script>
+    <title>GitHub Projects Performance Analysis</title>
+    <style>*{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: rgb(219, 226, 226);
+        }
+        .row {
+            background-color: white;
+            border-radius: 30px;
+            box-shadow: 12px 12px 22px grey;
+        }
+        img {
+            border-top-left-radius: 30px;
+            border-bottom-left-radius: 30px;
+            padding: 50px;
+        }
+        .btn1 {
+            border: none;
+            outline: none;
+            height: 50px;
+            width: 100%;
+            background-color: black;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .btn1:hover {
+            background: white;
+            border: 1px solid;
+            color: black;
+        }</style>
+        <script>function passvalues() {
+  var organization = document.getElementById("Organization").value;
+  localStorage.setItem("organization", organization);
+  return false;
+}</script>
+  </head>
+  <body>
+    <section class="Form my-5 mx-5">
+        <div class="container">
+            <div class="row no-gutters d-flex justify-content-center">
+                <div class="col-lg-5">
+                    <img src="/logo.de01bb0e.png" class="img-fluid my-5" alt="">
+                </div>
+                <div class="col-lg-7 px-4 pt-5">
+                    <h1>Choose Your Account</h1>
+                        <form action="./homePersonal.html">
+                        <div class="form-row">
+                            <div class="col-lg-8" style="width: 36rem;">
+                                <br>
+                                <h4>Personal Account</h4>
+                                <input type="submit" class="btn1 mt-3 mb-3" value="Personal Account">
+                            </div>
+                        </div>
+                        </form>
+                        <div class="form-row">
+                            <div class="col-lg-8">
+                                <br>
+                                <h4>Organization Account</h4>
+                                <input type="text" placeholder="Organization (Case-Sensitive)" class="form-control my-3 p-4" id="Organization">
+                            </div>
+                        </div>
+                        <form action="home.html" id="org">
+                            <div class="form-row">
+                                <div class="col-lg-8" style="width: 36rem;">
+                                    <input type="submit" class="btn1 mt-3 mb-3" value="Organization Account" id="orgSubmit" onclick="passvalues();">
+                                </div>
+                            </div>
+                        </form>
+                        <p></p>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>var myForm = document.querySelector('#org');
+var myInput = document.querySelector('#Organization');
+myForm.addEventListener('submit', function (pEvent) {
+  if (myInput.value === '') {
+    pEvent.preventDefault(); //Prevents the form to be sent
+
+    alert('Please input your organization!'); //Do whatever you want
+  }
+});</script>
+  </body>
+</html>
