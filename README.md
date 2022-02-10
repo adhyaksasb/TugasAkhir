@@ -1,7 +1,6 @@
 # TugasAkhir
-Aplikasi performansi kinerja agile yang memanfaatkan API GitHub untuk mengambil data Lead Time dari papan kanban pada fitur GitHub Projects Management.<br>
+Aplikasi performansi kinerja agile yang memanfaatkan API GitHub untuk mengambil data Lead Time dari papan kanban pada fitur GitHub Projects Management.<br><br>
 Dokementasi pengembangan dapat dilihat di [wiki](https://github.com/adhyaksasb/TugasAkhir/wiki/)
-
 
 # Javascript yang digunakan
 1. Node.js <br>
